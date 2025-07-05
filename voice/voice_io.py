@@ -4,6 +4,15 @@ import pyttsx3
 # Initialize the TTS engine once for efficiency
 engine = pyttsx3.init()
 
+# Select the most Jarvis-like voice
+voices = engine.getProperty('voices')
+for voice in voices:
+    if 'hazel' in voice.name.lower() or 'en-gb' in voice.id.lower():
+        engine.setProperty('voice', voice.id)
+        break
+
+engine.setProperty('rate', 180)  # Speed: slower = classier
+
 def speak(text: str) -> None:
     """
     Convert text to speech and speak it out loud.

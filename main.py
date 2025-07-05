@@ -2,6 +2,7 @@ from voice.voice_io import listen, speak
 from core.command_center import handle_command
 
 def main():
+    
     speak("Jarvis online. How can I assist you, boss?")
     while True:
         command = listen()
