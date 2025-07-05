@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folder
+env/
+venv/
+ENV/
+.venv/
+
+# Logs
+logs/
+*.log
+
+# IDE/editor folders and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python egg files
+*.egg-info/
+.eggs/
+
+# Distribution / packaging
+build/
+dist/
+*.egg
+*.whl
+
+# MacOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+
+# Python coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables
+.env
