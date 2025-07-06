@@ -35,7 +35,7 @@ def handle_command(command: str) -> str:
         return get_day_number()
     elif "day" in command:
         return get_day_name()
-    elif "open" in command or "pull" in command:
+    elif "open" in command:
         words = command.split("open", 1)[-1].strip()
         # Decide whether it's an app or folder
         if any(folder in words for folder in get_known_folders()):
