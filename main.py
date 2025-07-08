@@ -10,7 +10,7 @@ def main():
         if not command:
             continue
         if command in ["exit", "quit", "stop", "terminate"]:
-            speak("Goodbye, boss!")
+            speak("Goodbye, Mr. Khan!")
             break
         response = handle_command(command)
         speak(response)

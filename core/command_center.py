@@ -8,6 +8,7 @@ from modules.basic_tasks import (
     open_link,
 )
 from modules.time_manager import parse_duration, set_timer
+from modules.internet import search_wikipedia, google_search, web_scrape_snippet
 from utils.folder_utils import get_known_folders
 from utils.response_manager import get_random_response
 
@@ -46,6 +47,25 @@ def handle_command(command: str) -> str:
         # speak(f"Which one would you like me to play, Mr. Khan?")
         # if command
         return open_link("phonk-playlist")
-
+    elif (
+        command.startswith("who is")
+        or command.startswith("what is")
+        or command.startswith("define")
+    ):
+        topic = (
+            command.replace("who is", "")
+            or command.replace("what is", "")
+            or command.replace("define", "").strip()
+        )
+        return search_wikipedia(topic)
+    elif "search google for" in command:
+        topic = command.replace("search google for", "").strip()
+        return google_search(topic)
+    elif "look up" in command or "search online" in command:
+        topic = (
+            command.replace("look up", "")
+            or command.replace("search online", "").strip()
+        )
+        return web_scrape_snippet(topic)
     else:
-        return "Sorry boss, I can only tell time, date, day and opening things and playlist for now."
+        return "Sorry boss, currently I'm at operating at a fraction of full capacity."

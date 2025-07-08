@@ -1,36 +1,14 @@
 import speech_recognition as sr
-import pyttsx3
+import asyncio
+from core.voice_manager import _speak_async
 
-# Initialize TTS engine once
-engine = pyttsx3.init()
 
-# Try to set the voice to 'George' from UK voice pack
-def set_jarvis_voice():
-    voices = engine.getProperty('voices')
-
-    for voice in voices:
-        # Debug voice names and IDs to see what's available
-        # print(f"Name: {voice.name}, ID: {voice.id}")
-        if "george" in voice.name.lower():
-            engine.setProperty('voice', voice.id)
-            print(f"✅ Using voice: {voice.name}")
-            return
-        if "en-gb" in voice.id.lower() or "english (united kingdom)" in voice.name.lower():
-            engine.setProperty('voice', voice.id)
-            print(f"✅ Using fallback UK voice: {voice.name}")
-            return
-
-    print("⚠️ UK voice not found. Using default voice.")
-
-set_jarvis_voice()
-engine.setProperty('rate', 160)
-
-def speak(text: str) -> None:
+def speak(text: str):
     """
-    Convert text to speech and speak it out loud.
+    Public function to speak text aloud using edge-tts.
     """
-    engine.say(text)
-    engine.runAndWait()
+    asyncio.run(_speak_async(text))
+
 
 def listen() -> str:
     """
@@ -50,5 +28,6 @@ def listen() -> str:
         speak("Sorry, I didn't catch that.")
         return ""
     except sr.RequestError:
+        print("Speech service is unavailable.")
         speak("Speech service is unavailable.")
         return ""
