@@ -11,61 +11,108 @@ from modules.time_manager import parse_duration, set_timer
 from modules.internet import search_wikipedia, google_search, web_scrape_snippet
 from utils.folder_utils import get_known_folders
 from utils.response_manager import get_random_response
+from utils.days_passed import calculate_days_passed, boot_date
 
 
 def handle_command(command: str) -> str:
-    command = command.lower()
+    command = command.lower().strip()
 
-    if "how are you" in command or "system status" in command:
-        return get_random_response("how_are_you")
-    elif "timer" in command:
-        try:
-            seconds = parse_duration(command)
-            if seconds > 0:
-                set_timer(seconds)
-                return "Timer set, boss. You'll be notified."
-            else:
-                return "I couldn't understand how long to set the timer for, boss."
-        except Exception as e:
-            return f"Something went wrong while setting the timer: {str(e)}"
-    elif "time" in command:
-        return get_time()
-    elif "date" in command:
-        return get_date()
-    elif "day number" in command or "day of the week" in command:
-        return get_day_number()
-    elif "day" in command:
-        return get_day_name()
-    elif "open" in command:
-        words = command.split("open", 1)[-1].strip()
-        # Decide whether it's an app or folder
-        if any(folder in words for folder in get_known_folders()):
-            return open_folder(words)
-        else:
-            return open_app(words)
-    elif "play some funk" in command or "fire up funk music" in command:
-        # speak(f"Which one would you like me to play, Mr. Khan?")
-        # if command
-        return open_link("phonk-playlist")
-    elif (
-        command.startswith("who is")
-        or command.startswith("what is")
-        or command.startswith("define")
+    # 🧠 Basic conversations
+    if any(
+        phrase in command
+        for phrase in ["how are you", "how you holding up", "system status"]
     ):
-        topic = (
-            command.replace("who is", "")
-            or command.replace("what is", "")
-            or command.replace("define", "").strip()
-        )
-        return search_wikipedia(topic)
-    elif "search google for" in command:
+        return get_random_response("how_are_you")
+
+    # ⏱ Timer
+    if "timer" in command:
+        return handle_timer(command)
+
+    # 🗓️ Time & Date
+    if "time" in command:
+        return get_time()
+    if "date" in command:
+        return get_date()
+    if "day number" in command:
+        return get_day_number()
+    if "day" in command:
+        return get_day_name()
+
+    # 🧭 App & Folder
+    if command.startswith("open"):
+        return handle_open(command)
+
+    # 🎶 Custom link
+    if any(phrase in command for phrase in ["play some funk", "fire up funk music"]):
+        return open_link("phonk-playlist")
+
+    # 🌐 Wiki Search
+    if command.startswith(("who is", "what is", "define")):
+        return handle_wiki(command)
+
+    # 🔍 Google Search
+    if "search google for" in command:
         topic = command.replace("search google for", "").strip()
         return google_search(topic)
-    elif "look up" in command or "search online" in command:
-        topic = (
-            command.replace("look up", "")
-            or command.replace("search online", "").strip()
-        )
+
+    # 🔎 Web Scrape
+    if "loop up" in command:
+        topic = command.replace("look up", "").strip()
         return web_scrape_snippet(topic)
-    else:
-        return "Sorry boss, currently I'm at operating at a fraction of full capacity."
+
+    # 🧮 System Age
+    if any(
+        phrase in command
+        for phrase in [
+            "how old are you",
+            "what's your age",
+            "how long have you been online",
+        ]
+    ):
+        return calculate_days_passed()
+
+    # 📅 Initialization Date
+    if any(
+        phrase in command
+        for phrase in [
+            "when were you first booted",
+            "when were you born",
+            "what's your boot date",
+            "when did you go online",
+        ]
+    ):
+        return boot_date()
+
+    # 🤷‍♂️ Default
+    return "Sorry boss, currently I'm operating at a fraction of full capacity."
+
+
+# -------------------------------------------
+# 💥 Subcommand Handlers
+# -------------------------------------------
+
+
+def handle_timer(command: str) -> str:
+    try:
+        seconds = parse_duration(command)
+        if seconds > 0:
+            set_timer(seconds)
+            return "Timer set boss. You'll will be notified."
+        return "I couldn't understand how long to set the timer for."
+    except Exception as e:
+        return f"Something went wrong while setting the timer: {str(e)}"
+
+
+def handle_open(command: str) -> str:
+    words = command.split("open", 1)[-1].strip()
+    if any(folder in words for folder in get_known_folders):
+        return open_folder(words)
+    return open_app(words)
+
+
+def handle_wiki(command: str) -> str:
+    for prefix in ["who is", "what is", "define"]:
+        if command.startswith(prefix):
+            topic = command.replace(prefix)
+            return search_wikipedia(topic)
+        return "Sorry boss, I couldn't figure out what to look up on Wikipedia."

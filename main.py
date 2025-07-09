@@ -6,13 +6,15 @@ from core.voice_manager import cleanup_temp_folder
 
 def main():
 
-    speak("Jarvis system boot complete, boss. Awaiting commands.", mood="happy")
+    speak(
+        "Jarvis system boot complete, boss. Awaiting commands.", mood="sarcastic"
+    )  # mood = "happy"
     while True:
         command = listen()
         if not command:
             continue
         if command in ["exit", "quit", "stop", "terminate"]:
-            speak("Goodbye, Mr. Khan!", mood="calm")
+            speak("Goodbye Mr. Khan.", mood="sarcastic")  # mood="calm"
             break
         response = handle_command(command)
         speak(response)
