@@ -10,6 +10,7 @@ def main():
         "Jarvis system boot complete, boss. Awaiting commands.", mood="sarcastic"
     )  # mood = "happy"
     while True:
+
         command = listen()
         if not command:
             continue
